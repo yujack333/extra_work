@@ -4,6 +4,7 @@
 
 import tensorflow as tf
 from tensorflow.contrib import slim
+from tensorflow.core.framework import summary_pb2
 
 
 def conv2d(inputs, filters, kernel_size, strides=1):
@@ -20,3 +21,7 @@ def conv2d(inputs, filters, kernel_size, strides=1):
     inputs = slim.conv2d(inputs, filters, kernel_size, stride=strides,
                          padding=('SAME' if strides == 1 else 'VALID'))
     return inputs
+
+
+def make_summary(name, val):
+    return summary_pb2.Summary(value=[summary_pb2.Summary.Value(tag=name, simple_value=val)])

@@ -73,7 +73,12 @@ class Model:
 
     def compute_loss(self, logits, labels):
         with tf.name_scope('loss'):
-            return tf.losses.sigmoid_cross_entropy(multi_class_labels=labels, logits=logits)
+            # loss = tf.losses.sigmoid_cross_entropy(multi_class_labels=labels,
+            #                                        logits=logits,
+            #                                        reduction=tf.losses.Reduction.SUM_OVER_BATCH_SIZE)
+            loss = tf.losses.sigmoid_cross_entropy(multi_class_labels=labels,
+                                                   logits=logits)
+            return loss
 
 
 def darknet53_body(inputs):
