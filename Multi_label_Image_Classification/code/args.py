@@ -2,18 +2,26 @@
 # @Time    : 2019/5/24 22:33
 # @Author  : YuYi
 import os
+import math
+
+
+# data related path
 root_path = 'G:/extra_work/Multi_label_Image_Classification/'
 train_txt_path = os.path.join(root_path, 'data', 'train2014.txt')
 train_image_path = os.path.join(root_path, 'data', 'image_data', 'train2014')
 
 # tf.data parameters
-num_train_img = 30000
+num_train_img = len(open(train_txt_path).readlines())
 prefetech_buffer = 5  # Prefetech_buffer used in tf.data pipeline.
 
+# train parameters
 num_threads = 10
 image_w = 224
 image_h = 224
-batch_size = 1
+batch_size = 4
+epoch = 1
+num_step_per_epoch = math.ceil(float(num_train_img)/batch_size)
+
 
 
 # Learning rate and optimizer

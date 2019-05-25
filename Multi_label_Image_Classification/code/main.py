@@ -9,6 +9,7 @@ import sys
 from utils.data_utils import parse_line
 from utils.train_utils import config_learning_rate, config_optimizer
 from model import  Model
+import time
 
 
 def main():
@@ -26,7 +27,6 @@ def main():
         num_parallel_calls=args.num_threads
     )
     train_dataset = train_dataset.batch(args.batch_size)
-    train_dataset = train_dataset.repeat()
     train_dataset = train_dataset.prefetch(args.prefetech_buffer)
 
     iterator = tf.data.Iterator.from_structure(train_dataset.output_types, train_dataset.output_shapes)
@@ -55,17 +55,32 @@ def main():
     config = tf.ConfigProto()
     config.gpu_options.allow_growth = True
     with tf.Session(config=config) as sess:
-        sess.run(train_init_op)
+
+        # initial train data \ model weights
         sess.run([tf.global_variables_initializer(), tf.local_variables_initializer()])
-        # test input part
-        # a, b = sess.run((images, labels))
-        # print(a.shape, b.shape)
-        # print(np.sum(b))
-        # print(b)
-        
-        # test train
-        a, _ = sess.run((loss, train_op))
-        print(a)
+
+        for epoch_i in range(args.epoch):
+            sess.run(train_init_op)
+            for step in range(args.num_step_per_epoch):
+                s_time = time.time()
+                a, _ = sess.run((loss, train_op))
+                e_time = time.time()
+
+                if step % 1 == 0:
+                    print(e_time-s_time, step, a)
+
+                if step % 20 == 0 and step > 0:
+                    # summary
+                    break
+                    pass
+
+            if epoch_i % 2 == 0 and epoch_i > 0:
+                # save model
+                pass
+            if epoch_i %2 == 0 and epoch_i > 0:
+                # eval model
+                pass
+
 
 if __name__ == '__main__':
     main()
